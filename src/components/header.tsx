@@ -24,12 +24,6 @@ function Header() {
         </Link>
         <Link
           className="font-medium text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-primary"
-          href="#"
-        >
-          Products
-        </Link>
-        <Link
-          className="font-medium text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-primary"
           href="/contact"
         >
           Contact

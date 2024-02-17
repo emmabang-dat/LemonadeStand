@@ -16,18 +16,29 @@ import { Drink } from "@/interface/cocktail";
 import { ShoppingBagIcon } from "../../public/svg/shoppingBagIcon";
 import { Input } from "@/components/ui/input";
 import { SearchIcon } from "../../public/svg/searchIcon";
+import Link from "next/link";
 
 export default function Home() {
   const [cocktails, setCocktails] = useState<Drink[]>([]);
-  const [cart, setCart] = useState<Drink[]>([]);
+  const [cart, setCart] = useState<Map<string, number>>(new Map());
 
   const addToCart = (drink: Drink) => {
-    setCart([...cart, drink]);
+    const updatedCart = new Map(cart);
+    const quantity = updatedCart.get(drink.idDrink) || 0;
+    updatedCart.set(drink.idDrink, quantity + 1);
+    setCart(updatedCart);
   };
 
-  const removeFromCart = (index: number) => {
-    const updatedCart = [...cart];
-    updatedCart.splice(index, 1);
+  const removeFromCart = (drinkId: string) => {
+    const updatedCart = new Map(cart);
+    const quantity = updatedCart.get(drinkId) || 0;
+
+    if (quantity > 1) {
+      updatedCart.set(drinkId, quantity - 1);
+    } else {
+      updatedCart.delete(drinkId);
+    }
+
     setCart(updatedCart);
   };
 
@@ -54,26 +65,26 @@ export default function Home() {
         </div>
         <div className="grid gap-4">
           {cocktails &&
-            cocktails.map((cocktails) => (
-              <Card key={cocktails.idDrink}>
+            cocktails.map((cocktail) => (
+              <Card key={cocktail.idDrink}>
                 <CardContent className="flex items-center gap-4">
                   <img
-                    alt={cocktails.strDrink}
+                    alt={cocktail.strDrink}
                     className="aspect-2-1 rounded-lg object-cover border mt-4"
                     height="100"
-                    src={cocktails.strDrinkThumb}
+                    src={cocktail.strDrinkThumb}
                     width="200"
                   />
                   <div className="flex-1 grid gap-2">
-                    <CardTitle>{cocktails.strDrink}</CardTitle>
+                    <CardTitle>{cocktail.strDrink}</CardTitle>
                     <CardDescription>
-                      {cocktails.strInstructions}
+                      {cocktail.strInstructions}
                     </CardDescription>
                   </div>
                 </CardContent>
                 <CardFooter className="flex items-center gap-2">
-                  <div className="font-semibold">$6</div>
-                  <Button onClick={() => addToCart(cocktails)} size="sm">
+                  <div className="font-semibold mr-4">$6</div>
+                  <Button onClick={() => addToCart(cocktail)} size="sm">
                     Add to cart
                   </Button>
                 </CardFooter>
@@ -99,44 +110,61 @@ export default function Home() {
         <Card className="mt-4 sticky top-8">
           <CardContent>
             <div className="font-semibold pt-6 pb-3">Your cart</div>
-            {cart.length === 0 ? (
+            {cart.size === 0 ? (
               <p className="text-gray-500 italic pt-3">Your cart is empty</p>
             ) : (
-              cart.map((item, index) => (
-                <div key={index} className="flex items-center gap-4 mt-2">
-                  <img
-                    alt="Product image"
-                    className="aspect-square rounded-md object-cover"
-                    height="80"
-                    src={item.strDrinkThumb}
-                    width="80"
-                  />
-                  <div className="flex-1 grid gap-1 text-sm">
-                    <div className="font-semibold">{item.strDrink}</div>
-                    <div>1 x $6</div>
-                  </div>
-                  <Button className="h-6 w-6" size="icon" variant="outline">
-                    <MinusIcon
-                      onClick={() => removeFromCart(index)}
-                      className="h-2 w-2"
+              Array.from(cart).map(([drinkId, quantity]) => {
+                const drink = cocktails.find(
+                  (cocktail) => cocktail.idDrink === drinkId
+                );
+                if (!drink) return null;
+
+                return (
+                  <div key={drinkId} className="flex items-center gap-4 mt-2">
+                    <img
+                      alt="Product image"
+                      className="aspect-square rounded-md object-cover"
+                      height="80"
+                      src={drink.strDrinkThumb}
+                      width="80"
                     />
-                    <span className="sr-only">Remove one</span>
-                  </Button>
-                </div>
-              ))
+                    <div className="flex-1 grid gap-1 text-sm">
+                      <div className="font-semibold">{drink.strDrink}</div>
+                      <div>{quantity} x $6</div>
+                    </div>
+                    <Button
+                      onClick={() => removeFromCart(drinkId)}
+                      className="h-6 w-6"
+                      size="icon"
+                      variant="outline"
+                    >
+                      <MinusIcon className="h-2 w-2" />
+                      <span className="sr-only">Remove one</span>
+                    </Button>
+                  </div>
+                );
+              })
             )}
           </CardContent>
 
           <CardFooter className="flex gap-4">
             <div>Subtotal</div>
             <div className="ml-auto">
-              ${cart.reduce((total, item) => total + 6, 0)}
+              $
+              {Array.from(cart).reduce((total, [drinkId, quantity]) => {
+                const drink = cocktails.find(
+                  (cocktail) => cocktail.idDrink === drinkId
+                );
+                return total + (drink ? quantity * 6 : 0);
+              }, 0)}
             </div>
 
-            <Button className="w-full">
-              <ShoppingBagIcon className="mr-2 h-4 w-4" />
-              Go to cart
-            </Button>
+            <Link href="/cart" className="flex items-center">
+              <Button className="w-full">
+                <ShoppingBagIcon className="mr-2 h-4 w-4" />
+                Go to cart
+              </Button>
+            </Link>
           </CardFooter>
         </Card>
       </div>
