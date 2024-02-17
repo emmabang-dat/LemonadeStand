@@ -10,10 +10,12 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { MinusIcon } from "../../public/svg/minusIcon";
-import { CreditCardIcon } from "../../public/svg/creditCardIcon";
 import { useEffect, useState } from "react";
 import { getRandomCocktail } from "@/lib/cocktailapi";
 import { Drink } from "@/interface/cocktail";
+import { ShoppingBagIcon } from "../../public/svg/shoppingBagIcon";
+import { Input } from "@/components/ui/input";
+import { SearchIcon } from "../../public/svg/searchIcon";
 
 export default function Home() {
   const [cocktails, setCocktails] = useState<Drink[]>([]);
@@ -79,44 +81,65 @@ export default function Home() {
             ))}
         </div>
       </div>
-      <Card className="mt-8 sticky top-8">
-        <CardContent>
-          <div className="font-semibold pt-6 pb-3">Your cart</div>
-          {cart.length === 0 ? (
-            <p className="text-gray-500 italic pt-3">Your cart is empty</p>
-          ) : (
-            cart.map((item, index) => (
-              <div key={index} className="flex items-center gap-4 mt-2">
-                <img
-                  alt="Product image"
-                  className="aspect-square rounded-md object-cover"
-                  height="80"
-                  src={item.strDrinkThumb}
-                  width="80"
-                />
-                <div className="flex-1 grid gap-1 text-sm">
-                  <div className="font-semibold">{item.strDrink}</div>
-                  <div>1 x $6</div>
-                </div>
-                <Button className="h-6 w-6" size="icon" variant="outline">
-                  <MinusIcon
-                    onClick={() => removeFromCart(index)}
-                    className="h-2 w-2"
-                  />
-                  <span className="sr-only">Remove one</span>
-                </Button>
-              </div>
-            ))
-          )}
-        </CardContent>
 
-        <CardFooter>
-          <div>Subtotal</div>
-          <div className="ml-auto">
-            ${cart.reduce((total, item) => total + 6, 0)}
+      <div>
+        {/* Searchbar */}
+        <div className="relative mt-8">
+          <Input
+            className="pl-10 pr-4 py-2 rounded-lg border focus:outline-none focus:border-primary"
+            type="search"
+            placeholder="Search for a drink"
+          />
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <SearchIcon className="h-5 w-5 text-gray-400" />
           </div>
-        </CardFooter>
-      </Card>
+        </div>
+
+        {/* Cart */}
+        <Card className="mt-4 sticky top-8">
+          <CardContent>
+            <div className="font-semibold pt-6 pb-3">Your cart</div>
+            {cart.length === 0 ? (
+              <p className="text-gray-500 italic pt-3">Your cart is empty</p>
+            ) : (
+              cart.map((item, index) => (
+                <div key={index} className="flex items-center gap-4 mt-2">
+                  <img
+                    alt="Product image"
+                    className="aspect-square rounded-md object-cover"
+                    height="80"
+                    src={item.strDrinkThumb}
+                    width="80"
+                  />
+                  <div className="flex-1 grid gap-1 text-sm">
+                    <div className="font-semibold">{item.strDrink}</div>
+                    <div>1 x $6</div>
+                  </div>
+                  <Button className="h-6 w-6" size="icon" variant="outline">
+                    <MinusIcon
+                      onClick={() => removeFromCart(index)}
+                      className="h-2 w-2"
+                    />
+                    <span className="sr-only">Remove one</span>
+                  </Button>
+                </div>
+              ))
+            )}
+          </CardContent>
+
+          <CardFooter className="flex gap-4">
+            <div>Subtotal</div>
+            <div className="ml-auto">
+              ${cart.reduce((total, item) => total + 6, 0)}
+            </div>
+
+            <Button className="w-full">
+              <ShoppingBagIcon className="mr-2 h-4 w-4" />
+              Go to cart
+            </Button>
+          </CardFooter>
+        </Card>
+      </div>
     </div>
   );
 }
