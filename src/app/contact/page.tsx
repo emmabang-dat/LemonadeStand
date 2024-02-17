@@ -10,7 +10,7 @@ function Contact() {
       </h1>
       <div className="grid gap-4">
         <div className="grid gap-2">
-          <Card className="p-0 m-5">
+          <Card>
             <CardContent className="p-0 flex">
               <div className="mr-4">
                 <Image
@@ -36,7 +36,7 @@ function Contact() {
               </div>
             </CardContent>
           </Card>
-          <Card className="p-0 m-5">
+          <Card className="my-8">
             <CardContent className="p-0 flex">
               <div className="">
                 <p className="pt-28 pl-28 text-3xl">
@@ -62,7 +62,7 @@ function Contact() {
               </div>
             </CardContent>
           </Card>
-          <Card className="p-0 m-5 mb-10">
+          <Card className="mb-10">
             <CardContent className="p-0 flex">
               <div className="mr-4">
                 <Image
