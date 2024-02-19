@@ -8,11 +8,10 @@ import {
   CardFooter,
   Card,
 } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { MinusIcon } from "../../public/svg/minusIcon";
 import { useEffect, useState } from "react";
-import { getRandomCocktail } from "@/lib/cocktailapi";
 import { Drink } from "@/interface/cocktail";
+import cocktailsData from "@/lib/cocktailapi.json";
 import { ShoppingBagIcon } from "../../public/svg/shoppingBagIcon";
 import { Input } from "@/components/ui/input";
 import { SearchIcon } from "../../public/svg/searchIcon";
@@ -21,6 +20,15 @@ import Link from "next/link";
 export default function Home() {
   const [cocktails, setCocktails] = useState<Drink[]>([]);
   const [cart, setCart] = useState<Map<string, number>>(new Map());
+  const [searchText, setSearchText] = useState("");
+
+  useEffect(() => {
+    setCocktails(cocktailsData.cocktailsData);
+  }, []);
+
+  const filteredCocktails = cocktails.filter((cocktail) =>
+    cocktail.strDrink.toLowerCase().includes(searchText.toLowerCase())
+  );
 
   const addToCart = (drink: Drink) => {
     const updatedCart = new Map(cart);
@@ -42,16 +50,6 @@ export default function Home() {
     setCart(updatedCart);
   };
 
-  useEffect(() => {
-    getRandomCocktail()
-      .then((cocktails: Drink[]) => {
-        setCocktails(cocktails);
-      })
-      .catch((error) => {
-        console.error("Error fetching random cocktails:", error);
-      });
-  }, []);
-
   return (
     <div className="grid items-start gap-4 px-4 pb-4 md:gap-8 md:px-6 lg:grid-cols-[1fr_300px]">
       <div className="flex flex-col gap-4">
@@ -64,8 +62,8 @@ export default function Home() {
           </p>
         </div>
         <div className="grid gap-4">
-          {cocktails &&
-            cocktails.map((cocktail) => (
+          {filteredCocktails &&
+            filteredCocktails.map((cocktail) => (
               <Card key={cocktail.idDrink}>
                 <CardContent className="flex items-center gap-4">
                   <img
@@ -77,13 +75,11 @@ export default function Home() {
                   />
                   <div className="flex-1 grid gap-2">
                     <CardTitle>{cocktail.strDrink}</CardTitle>
-                    <CardDescription>
-                      {cocktail.strInstructions}
-                    </CardDescription>
+                    <CardDescription>{cocktail.strDescription}</CardDescription>
                   </div>
                 </CardContent>
                 <CardFooter className="flex items-center gap-2">
-                  <div className="font-semibold mr-4">$6</div>
+                  <div className="font-semibold mr-4">${cocktail.strPrice}</div>
                   <Button onClick={() => addToCart(cocktail)} size="sm">
                     Add to cart
                   </Button>
@@ -100,6 +96,8 @@ export default function Home() {
             className="pl-10 pr-4 py-2 rounded-lg border focus:outline-none focus:border-primary"
             type="search"
             placeholder="Search for a drink"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
           />
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <SearchIcon className="h-5 w-5 text-gray-400" />
@@ -130,7 +128,9 @@ export default function Home() {
                     />
                     <div className="flex-1 grid gap-1 text-sm">
                       <div className="font-semibold">{drink.strDrink}</div>
-                      <div>{quantity} x $6</div>
+                      <div>
+                        {quantity} x ${drink.strPrice}
+                      </div>
                     </div>
                     <Button
                       onClick={() => removeFromCart(drinkId)}
@@ -155,7 +155,9 @@ export default function Home() {
                 const drink = cocktails.find(
                   (cocktail) => cocktail.idDrink === drinkId
                 );
-                return total + (drink ? quantity * 6 : 0);
+                return (
+                  total + (drink ? quantity * parseFloat(drink.strPrice) : 0)
+                );
               }, 0)}
             </div>
 
