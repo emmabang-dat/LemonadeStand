@@ -16,6 +16,7 @@ function Contact() {
                 <Image
                   alt="lady drinking lemonade"
                   src="/lady.jpg"
+                  layout="responsive"
                   className="object-cover rounded-lg"
                   height={400}
                   width={600}
@@ -23,7 +24,7 @@ function Contact() {
               </div>
 
               <div className="">
-                <p className="pt-12 pl-8 text-xl xl:pt-28 xl:pl-28 xl:text-3xl">
+                <p className="pt-12 pl-8 text-xl xl:pt-20 xl:pl-28 xl:text-3xl">
                   Founder and owner of the Lemonade Stand
                 </p>
                 <p className="pt-7 px-12 text-xl xl:px-32 xl:text-2xl italic">
@@ -41,7 +42,7 @@ function Contact() {
           <Card className="m-8">
             <CardContent className="p-0 flex">
               <div className="">
-                <p className="pt-12 pl-8 text-xl xl:pt-28 xl:pl-28 xl:text-3xl">
+                <p className="pt-12 pl-8 text-xl xl:pt-20 xl:pl-28 xl:text-3xl">
                   Buyer and beer specialist
                 </p>
                 <p className="pt-7 px-12 text-xl xl:px-32 xl:text-2xl italic">
@@ -54,14 +55,14 @@ function Contact() {
                   - James
                 </p>
               </div>
-              <div className="ml-4">
+              <div className="">
                 <Image
                   alt="man with beer"
                   layout="responsive"
                   className="object-cover rounded-lg"
                   src="/man.jpg"
-                  width="600"
-                  height="400"
+                  height={400}
+                  width={600}
                 />
               </div>
             </CardContent>
@@ -74,12 +75,12 @@ function Contact() {
                   layout="responsive"
                   className="object-cover rounded-lg"
                   src="/winelady.jpg"
-                  width="600"
-                  height="400"
+                  height={400}
+                  width={600}
                 />
               </div>
               <div className="">
-                <p className="pt-12 pl-8 text-xl xl:pt-28 xl:pl-28 xl:text-3xl">
+                <p className="pt-12 pl-8 text-xl xl:pt-20 xl:pl-28 xl:text-3xl">
                   Social media manager
                 </p>
                 <p className="pt-7 px-12 text-xl xl:px-32 xl:text-2xl italic">
