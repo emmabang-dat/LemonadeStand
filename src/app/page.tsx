@@ -62,6 +62,11 @@ export default function Home() {
           </p>
         </div>
         <div className="grid gap-4">
+          {filteredCocktails.length === 0 && (
+            <p className="text-gray-500 italic text-2xl">
+              No cocktails match your search...
+            </p>
+          )}
           {filteredCocktails &&
             filteredCocktails.map((cocktail) => (
               <Card key={cocktail.idDrink}>
