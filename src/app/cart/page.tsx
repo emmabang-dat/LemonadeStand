@@ -13,6 +13,27 @@ import { Drink } from "@/interface/cocktail";
 
 export default function Cart() {
   const { cart, removeFromCart, addToCart } = useCartStore((state) => state);
+  const [randomDrinks, setRandomDrinks] = useState<Drink[]>([]);
+  const allDrinks: Drink[] = cocktailsData.cocktailsData;
+
+  const generateRandomDrinks = () => {
+    const allDrinks = cocktailsData.cocktailsData;
+    const randomIndexes: number[] = [];
+    while (randomIndexes.length < 3) {
+      const randomIndex = Math.floor(Math.random() * allDrinks.length);
+      if (!randomIndexes.includes(randomIndex)) {
+        randomIndexes.push(randomIndex);
+      }
+    }
+    const randomDrinksData: Drink[] = randomIndexes.map(
+      (index) => allDrinks[index]
+    );
+    setRandomDrinks(randomDrinksData);
+  };
+
+  useEffect(() => {
+    generateRandomDrinks();
+  }, []);
 
   const subtotal = Array.from(cart)
     .reduce((total, [drinkId, quantity]) => {
@@ -30,7 +51,7 @@ export default function Cart() {
       <h1 className="pt-10 font-semibold text-4xl text-center">
         Cart Overview
       </h1>
-      <div className="grid items-start gap-4 pb-4">
+      <div className="grid items-start gap-4 px-4 pb-4 md:gap-8 md:px-6 lg:grid-cols-[1fr_300px]">
         <Card className="flex flex-col p-0 mt-10">
           <CardContent className="flex flex-col gap-4">
             <div className="font-semibold text-2xl py-6">Your cart</div>
@@ -78,7 +99,7 @@ export default function Cart() {
               })}
             </div>
             <Separator />
-            <div className="flex items-center">
+            <div className="flex items-center text-lg">
               <div>Subtotal</div>
               <div className="ml-auto">${subtotal}</div>
             </div>
@@ -90,6 +111,37 @@ export default function Cart() {
               Pay with card
             </Button>
           </CardFooter>
+        </Card>
+        {/* Anything else */}
+        <Card className="sticky top-8">
+          <CardContent>
+            <div className="font-semibold pt-6 pb-3">Anything else</div>
+            <div className="grid gap-4">
+              {randomDrinks.map((drink) => (
+                <div
+                  key={drink.idDrink}
+                  className="flex items-center gap-6 mt-2"
+                >
+                  <img
+                    alt="Product image"
+                    className="aspect-square rounded-md object-cover"
+                    height="80"
+                    src={drink.strDrinkThumb}
+                    width="80"
+                  />
+                  <div className="flex-1 grid gap-1 text-sm">
+                    <div className="font-semibold">{drink.strDrink}</div>
+                    <div>
+                      ${drink.strPrice}
+                    </div>
+                    <Button onClick={() => addToCart(drink.idDrink)} size="sm">
+                      Add to Cart
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
         </Card>
       </div>
     </div>
