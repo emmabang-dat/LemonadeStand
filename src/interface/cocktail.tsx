@@ -48,4 +48,5 @@ export interface Drink {
   strImageAttribution?: any;
   strCreativeCommonsConfirmed?: string;
   dateModified?: string;
+  quantity?: number;
 }
