@@ -147,12 +147,19 @@ export default function Home() {
               }, 0)}
             </div>
 
-            <Link href="/cart" className="flex items-center">
-              <Button className="w-full">
+            <Button className="w-full" disabled={cart.size === 0}>
+              <Link href="/cart" className="flex items-center">
                 <ShoppingBagIcon className="mr-2 h-4 w-4" />
                 Go to cart
-              </Button>
-            </Link>
+              </Link>
+            </Button>
+
+            {/* <Link href="/cart" className="flex items-center">
+                <Button className="w-full" disabled={cart.size === 0}>
+                  <ShoppingBagIcon className="mr-2 h-4 w-4" />
+                  Go to cart
+                </Button>
+              </Link> */}
           </CardFooter>
         </Card>
       </div>
