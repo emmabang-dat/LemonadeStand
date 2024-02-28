@@ -16,10 +16,11 @@ import { ShoppingBagIcon } from "../../public/svg/shoppingBagIcon";
 import { Input } from "@/components/ui/input";
 import { SearchIcon } from "../../public/svg/searchIcon";
 import Link from "next/link";
+import { useCartStore } from "@/lib/store";
 
 export default function Home() {
+  const { cart, addToCart, removeFromCart } = useCartStore((state) => state);
   const [cocktails, setCocktails] = useState<Drink[]>([]);
-  const [cart, setCart] = useState<Map<string, number>>(new Map());
   const [searchText, setSearchText] = useState("");
 
   useEffect(() => {
@@ -29,26 +30,6 @@ export default function Home() {
   const filteredCocktails = cocktails.filter((cocktail) =>
     cocktail.strDrink.toLowerCase().includes(searchText.toLowerCase())
   );
-
-  const addToCart = (drink: Drink) => {
-    const updatedCart = new Map(cart);
-    const quantity = updatedCart.get(drink.idDrink) || 0;
-    updatedCart.set(drink.idDrink, quantity + 1);
-    setCart(updatedCart);
-  };
-
-  const removeFromCart = (drinkId: string) => {
-    const updatedCart = new Map(cart);
-    const quantity = updatedCart.get(drinkId) || 0;
-
-    if (quantity > 1) {
-      updatedCart.set(drinkId, quantity - 1);
-    } else {
-      updatedCart.delete(drinkId);
-    }
-
-    setCart(updatedCart);
-  };
 
   return (
     <div className="grid items-start gap-4 px-4 pb-4 md:gap-8 md:px-6 lg:grid-cols-[1fr_300px]">
@@ -85,7 +66,7 @@ export default function Home() {
                 </CardContent>
                 <CardFooter className="flex items-center gap-2">
                   <div className="font-semibold mr-4">${cocktail.strPrice}</div>
-                  <Button onClick={() => addToCart(cocktail)} size="sm">
+                  <Button onClick={() => addToCart(cocktail.idDrink)} size="sm">
                     Add to cart
                   </Button>
                 </CardFooter>

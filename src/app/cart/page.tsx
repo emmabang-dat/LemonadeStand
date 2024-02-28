@@ -1,10 +1,30 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { CardContent, CardFooter, Card } from "@/components/ui/card";
 import { MinusIcon } from "../../../public/svg/minusIcon";
 import { CreditCardIcon } from "../../../public/svg/creditCardIcon";
+import { PlusIcon } from "../../../public/svg/plusIcon";
+import { useCartStore } from "@/lib/store";
+import cocktailsData from "@/lib/cocktailapi.json";
+import { useEffect, useState } from "react";
+import { Drink } from "@/interface/cocktail";
 
-export default function Component() {
+export default function Cart() {
+  const { cart, removeFromCart, addToCart } = useCartStore((state) => state);
+
+  const subtotal = Array.from(cart)
+    .reduce((total, [drinkId, quantity]) => {
+      const cocktail = cocktailsData.cocktailsData.find(
+        (cocktail) => cocktail.idDrink === drinkId
+      );
+      if (!cocktail) return total;
+
+      return total + parseFloat(cocktail.strPrice) * quantity;
+    }, 0)
+    .toFixed(2);
+
   return (
     <div>
       <h1 className="pt-10 font-semibold text-4xl text-center">
@@ -15,62 +35,52 @@ export default function Component() {
           <CardContent className="flex flex-col gap-4">
             <div className="font-semibold text-2xl py-6">Your cart</div>
             <div className="grid gap-4">
-              <div className="flex items-center gap-4">
-                <img
-                  alt="Product image"
-                  className="aspect-square rounded-md object-cover"
-                  height="100"
-                  src="/placeholder.svg"
-                  width="100"
-                />
-                <div className="flex-1 grid gap-1 text-sm">
-                  <div className="font-semibold">Summer Breeze</div>
-                  <div>1 x $3.99</div>
-                </div>
-                <Button className="h-6 w-6" size="icon" variant="outline">
-                  <MinusIcon className="h-2 w-2" />
-                  <span className="sr-only">Remove one</span>
-                </Button>
-              </div>
-              <div className="flex items-center gap-4">
-                <img
-                  alt="Product image"
-                  className="aspect-square rounded-md object-cover"
-                  height="100"
-                  src="/placeholder.svg"
-                  width="100"
-                />
-                <div className="flex-1 grid gap-1 text-sm">
-                  <div className="font-semibold">Sparkling Citrus</div>
-                  <div>1 x $2.99</div>
-                </div>
-                <Button className="h-6 w-6" size="icon" variant="outline">
-                  <MinusIcon className="h-2 w-2" />
-                  <span className="sr-only">Remove one</span>
-                </Button>
-              </div>
-              <div className="flex items-center gap-4">
-                <img
-                  alt="Product image"
-                  className="aspect-square rounded-md object-cover"
-                  height="100"
-                  src="/placeholder.svg"
-                  width="100"
-                />
-                <div className="flex-1 grid gap-1 text-sm">
-                  <div className="font-semibold">Berry Bliss</div>
-                  <div>1 x $4.49</div>
-                </div>
-                <Button className="h-6 w-6" size="icon" variant="outline">
-                  <MinusIcon className="h-2 w-2" />
-                  <span className="sr-only">Remove one</span>
-                </Button>
-              </div>
+              {Array.from(cart).map(([drinkId, quantity]) => {
+                const cocktail = cocktailsData.cocktailsData.find(
+                  (cocktail) => cocktail.idDrink === drinkId
+                );
+                if (!cocktail) return null;
+                return (
+                  <div key={drinkId} className="flex items-center gap-6">
+                    <img
+                      alt="Product image"
+                      className="aspect-square rounded-md object-cover"
+                      height="200"
+                      src={cocktail.strDrinkThumb}
+                      width="200"
+                    />
+                    <div className="flex-1 grid gap-2 text-lg">
+                      <div className="font-semibold">{cocktail.strDrink}</div>
+                      <div>
+                        {quantity} x $ {cocktail.strPrice}
+                      </div>
+                    </div>
+                    <Button
+                      onClick={() => addToCart(drinkId)}
+                      className="h-8 w-8"
+                      size="icon"
+                      variant="outline"
+                    >
+                      <PlusIcon className="h-4 w-4" />
+                      <span className="sr-only">Add one</span>
+                    </Button>
+                    <Button
+                      onClick={() => removeFromCart(drinkId)}
+                      className="h-8 w-8"
+                      size="icon"
+                      variant="outline"
+                    >
+                      <MinusIcon className="h-4 w-4" />
+                      <span className="sr-only">Remove one</span>
+                    </Button>
+                  </div>
+                );
+              })}
             </div>
             <Separator />
             <div className="flex items-center">
               <div>Subtotal</div>
-              <div className="ml-auto">$11.47</div>
+              <div className="ml-auto">${subtotal}</div>
             </div>
           </CardContent>
 
