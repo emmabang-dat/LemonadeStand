@@ -25,7 +25,19 @@ export default function Home() {
   const cart = useCartStore();
 
   useEffect(() => {
-    setCocktails(cocktailsData.cocktailsData);
+    const tempCocktails = [...cocktailsData.cocktailsData];
+
+    // Brug Math.random() til at generere et tilfældigt indeks
+    for (let i = tempCocktails.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [tempCocktails[i], tempCocktails[j]] = [
+        tempCocktails[j],
+        tempCocktails[i],
+      ];
+    }
+
+    // Opdater state med de tilfældige cocktails
+    setCocktails(tempCocktails);
   }, []);
 
   const filteredCocktails = cocktails.filter((cocktail) =>
@@ -95,35 +107,39 @@ export default function Home() {
         <Card className="mt-4 sticky top-8">
           <CardContent>
             <div className="font-semibold pt-6 pb-3">Your cart</div>
-            {cart.items.map((cocktail) => (
-              <div
-                key={cocktail.idDrink}
-                className="flex items-center gap-4 mt-2"
-              >
-                <img
-                  alt="Product image"
-                  className="aspect-square rounded-md object-cover"
-                  height="80"
-                  src={cocktail.strDrinkThumb}
-                  width="80"
-                />
-                <div className="flex-1 grid gap-1 text-sm">
-                  <div className="font-semibold">{cocktail.strDrink}</div>
-                  <div>
-                    {cocktail.quantity} x ${cocktail.strPrice}
-                  </div>
-                </div>
-                <Button
-                  onClick={() => cart.removeFromCart(cocktail.idDrink)}
-                  className="h-6 w-6"
-                  size="icon"
-                  variant="outline"
+            {cart.items.length === 0 ? (
+              <div className="italic text-gray-400">Cart is empty</div>
+            ) : (
+              cart.items.map((cocktail) => (
+                <div
+                  key={cocktail.idDrink}
+                  className="flex items-center gap-4 mt-2"
                 >
-                  <MinusIcon className="h-2 w-2" />
-                  <span className="sr-only">Remove one</span>
-                </Button>
-              </div>
-            ))}
+                  <img
+                    alt="Product image"
+                    className="aspect-square rounded-md object-cover"
+                    height="80"
+                    src={cocktail.strDrinkThumb}
+                    width="80"
+                  />
+                  <div className="flex-1 grid gap-1 text-sm">
+                    <div className="font-semibold">{cocktail.strDrink}</div>
+                    <div>
+                      {cocktail.quantity} x ${cocktail.strPrice}
+                    </div>
+                  </div>
+                  <Button
+                    onClick={() => cart.removeFromCart(cocktail.idDrink)}
+                    className="h-6 w-6"
+                    size="icon"
+                    variant="outline"
+                  >
+                    <MinusIcon className="h-2 w-2" />
+                    <span className="sr-only">Remove one</span>
+                  </Button>
+                </div>
+              ))
+            )}
           </CardContent>
 
           <CardFooter className="flex gap-4">

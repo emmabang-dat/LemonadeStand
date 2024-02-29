@@ -54,18 +54,18 @@ export default function Cart() {
     }, 0)
     .toFixed(2);
 
-  const handleCancel = () => {
-    if (cart.items.length === 0) {
-      window.history.back();
-    } else {
-      setOpen(true);
-    }
-  };
-
-  const handleCancelConfirmed = () => {
-    cart.clearCart();
-    window.history.back();
-  };
+    const handleCancel = () => {
+        if (cart.items.length === 0) {
+          window.history.back();
+        } else {
+          setOpen(true);
+        }
+      };
+      
+      const handleCancelConfirmed = () => {
+        cart.clearCart();
+        window.history.back();
+      };      
 
   return (
     <div>
@@ -78,41 +78,48 @@ export default function Cart() {
           <CardContent className="flex flex-col gap-4">
             <div className="font-semibold text-2xl py-6">Your cart</div>
             <div className="grid gap-4">
-              {cart.items.map((cocktail) => (
-                <div key={cocktail.idDrink} className="flex items-center gap-6">
-                  <img
-                    alt="Product image"
-                    className="aspect-square rounded-md object-cover"
-                    height="200"
-                    src={cocktail.strDrinkThumb}
-                    width="200"
-                  />
-                  <div className="flex-1 grid gap-2 text-lg">
-                    <div className="font-semibold">{cocktail.strDrink}</div>
-                    <div>
-                      {cocktail.quantity} x $ {cocktail.strPrice}
+              {cart.items.length === 0 ? (
+                <div className="italic text-gray-400">Cart is empty</div>
+              ) : (
+                cart.items.map((cocktail) => (
+                  <div
+                    key={cocktail.idDrink}
+                    className="flex items-center gap-6"
+                  >
+                    <img
+                      alt="Product image"
+                      className="aspect-square rounded-md object-cover"
+                      height="200"
+                      src={cocktail.strDrinkThumb}
+                      width="200"
+                    />
+                    <div className="flex-1 grid gap-2 text-lg">
+                      <div className="font-semibold">{cocktail.strDrink}</div>
+                      <div>
+                        {cocktail.quantity} x $ {cocktail.strPrice}
+                      </div>
                     </div>
+                    <Button
+                      onClick={() => cart.addToCart(cocktail)}
+                      className="h-8 w-8"
+                      size="icon"
+                      variant="outline"
+                    >
+                      <PlusIcon className="h-4 w-4" />
+                      <span className="sr-only">Add one</span>
+                    </Button>
+                    <Button
+                      onClick={() => cart.removeFromCart(cocktail.idDrink)}
+                      className="h-8 w-8"
+                      size="icon"
+                      variant="outline"
+                    >
+                      <MinusIcon className="h-4 w-4" />
+                      <span className="sr-only">Remove one</span>
+                    </Button>
                   </div>
-                  <Button
-                    onClick={() => cart.addToCart(cocktail)}
-                    className="h-8 w-8"
-                    size="icon"
-                    variant="outline"
-                  >
-                    <PlusIcon className="h-4 w-4" />
-                    <span className="sr-only">Add one</span>
-                  </Button>
-                  <Button
-                    onClick={() => cart.removeFromCart(cocktail.idDrink)}
-                    className="h-8 w-8"
-                    size="icon"
-                    variant="outline"
-                  >
-                    <MinusIcon className="h-4 w-4" />
-                    <span className="sr-only">Remove one</span>
-                  </Button>
-                </div>
-              ))}
+                ))
+              )}
             </div>
 
             <Separator />
@@ -124,22 +131,24 @@ export default function Cart() {
 
           <CardFooter className="flex gap-8">
             <AlertDialog>
-                <AlertDialogTrigger asChild>
-                    <Button variant="outline">Cancel</Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                            This action cannot be undone. This will permanently delete
-                            your cart.
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleCancelConfirmed}>Continue</AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
+              <AlertDialogTrigger asChild>
+                <Button variant="outline">Cancel</Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete
+                    your cart.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel onClick={handleCancel}>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleCancelConfirmed}>
+                    Continue
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
             </AlertDialog>
 
             <Button className="w-full">
