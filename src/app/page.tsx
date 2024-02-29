@@ -19,7 +19,6 @@ import Link from "next/link";
 import { useCartStore } from "@/lib/store";
 
 export default function Home() {
-  // const { addToCart } = useCartStore((state) => state);
   const [cocktails, setCocktails] = useState<Drink[]>([]);
   const [searchText, setSearchText] = useState("");
 
@@ -97,7 +96,10 @@ export default function Home() {
           <CardContent>
             <div className="font-semibold pt-6 pb-3">Your cart</div>
             {cart.items.map((cocktail) => (
-              <div key={cocktail.idDrink} className="flex items-center gap-4 mt-2">
+              <div
+                key={cocktail.idDrink}
+                className="flex items-center gap-4 mt-2"
+              >
                 <img
                   alt="Product image"
                   className="aspect-square rounded-md object-cover"
@@ -128,14 +130,11 @@ export default function Home() {
             <div>Subtotal</div>
             <div className="ml-auto">
               $
-              {/* {Array.from(cart).reduce((total, [drinkId, quantity]) => {
-                const drink = cocktails.find(
-                  (cocktail) => cocktail.idDrink === drinkId
-                );
-                return (
-                  total + (drink ? quantity * parseFloat(drink.strPrice) : 0)
-                );
-              }, 0)} */}
+              {cart.items
+                .reduce((total, drink) => {
+                  return total + parseFloat(drink.strPrice) * drink.quantity!;
+                }, 0)
+                .toFixed(2)}
             </div>
 
             <Button className="w-full" disabled={cart.items.length === 0}>
