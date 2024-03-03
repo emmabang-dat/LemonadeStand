@@ -22,10 +22,17 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import JSConfetti from "js-confetti";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 export default function Cart() {
   const [randomDrinks, setRandomDrinks] = useState<Drink[]>([]);
   const cart = useCartStore();
+  const jsConfetti = new JSConfetti();
 
   const [open, setOpen] = React.useState(false);
 
@@ -54,18 +61,23 @@ export default function Cart() {
     }, 0)
     .toFixed(2);
 
-    const handleCancel = () => {
-        if (cart.items.length === 0) {
-          window.history.back();
-        } else {
-          setOpen(true);
-        }
-      };
-      
-      const handleCancelConfirmed = () => {
-        cart.clearCart();
-        window.history.back();
-      };      
+  const handleCancel = () => {
+    if (cart.items.length > 0) {
+      setOpen(true);
+    } else {
+      window.history.back();
+    }
+  };
+
+  const handleCancelConfirmed = () => {
+    cart.clearCart();
+    window.history.back();
+  };
+
+  function handleCheckout() {
+    jsConfetti.addConfetti();
+    cart.clearCart();
+  }
 
   return (
     <div>
@@ -143,18 +155,30 @@ export default function Cart() {
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel onClick={handleCancel}>Cancel</AlertDialogCancel>
+                  <AlertDialogCancel onClick={handleCancel}>
+                    Cancel
+                  </AlertDialogCancel>
                   <AlertDialogAction onClick={handleCancelConfirmed}>
                     Continue
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
-
-            <Button className="w-full">
-              <CreditCardIcon className="mr-2 h-4 w-4" />
-              Pay with card
-            </Button>
+            <Popover>
+              <PopoverTrigger>
+                <Button
+                  className="w-full"
+                  onClick={handleCheckout}
+                  disabled={cart.items.length === 0}
+                >
+                  <CreditCardIcon className="mr-2 h-4 w-4" />
+                  Pay with card
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent>
+                Hoorayy! 🎉 You have made an order!
+              </PopoverContent>
+            </Popover>
           </CardFooter>
         </Card>
 
