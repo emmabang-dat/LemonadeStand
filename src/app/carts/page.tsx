@@ -72,10 +72,6 @@ function Carts() {
       window.history.back();
     };  
 
-  function handleCheckout() {
-    useCart.clearCart();
-  }
-
   return (
     <div>
       <h1 className="pt-10 font-semibold text-4xl text-center">
@@ -165,7 +161,7 @@ function Carts() {
               <PopoverTrigger>
                 <Button
                   className="w-full"
-                  onClick={handleCheckout}
+                  onClick={() => useCart.allOrders()}
                 >
                   <CreditCardIcon className="mr-2 h-4 w-4" />
                   Pay with card

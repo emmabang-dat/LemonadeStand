@@ -28,6 +28,12 @@ function Header() {
         >
           Contact
         </Link>
+        <Link
+          className="font-medium text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-primary"
+          href="/panel"
+        >
+          Panel
+        </Link>
         <div className="flex items-center gap-2">
           <ModeToggle />
         </div>
