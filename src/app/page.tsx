@@ -146,11 +146,7 @@ export default function Home() {
             <div>Subtotal</div>
             <div className="ml-auto">
               $
-              {useCart.items
-                .reduce((total, drink) => {
-                  return total + parseFloat(drink.strPrice) * drink.quantity!;
-                }, 0)
-                .toFixed(2)}
+              {useCart.subTotal().toFixed(2)}
             </div>
 
 

@@ -8,7 +8,7 @@ interface CartState {
   addToCart: (cocktail: Drink) => void;
   removeFromCart: (drinkId: string) => void;
   clearCart: () => void;
-  allOrders: () => void;
+  subTotal: () => number;
 }
 
 export const useCartStore = create(
@@ -56,25 +56,11 @@ export const useCartStore = create(
         }
       },
 
-      allOrders: () => {
-        const allOrders = JSON.parse(localStorage.getItem("allOrders") || "[]");
-        const currentItems = get().items;
-        let orderIdCounter = parseInt(
-          localStorage.getItem("orderIdCounter") || "0"
-        );
-
-        orderIdCounter++;
-
-        const newOrder = {
-          orderId: orderIdCounter.toString(),
-          cocktails: currentItems,
-        };
-
-        allOrders.push(newOrder);
-        localStorage.setItem("allOrders", JSON.stringify(allOrders));
-
-        set({ items: [] });
-      },
+      subTotal: () =>
+        get().items.reduce(
+          (total, item) => total + parseFloat(item.strPrice!) * item.quantity!,
+          0
+        ),
 
       clearCart: () => {
         set({ items: [] });

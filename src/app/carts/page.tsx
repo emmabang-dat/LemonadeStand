@@ -27,10 +27,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useOrderStore } from "@/lib/order";
 
 function Carts() {
   const [randomDrinks, setRandomDrinks] = useState<Drink[]>([]);
   const useCart = useCartStore();
+  const useOrder = useOrderStore();
 
   const [open, setOpen] = React.useState(false);
 
@@ -53,24 +55,18 @@ function Carts() {
     generateRandomDrinks();
   }, []);
 
-  const subtotal = useCart.items
-    .reduce((total, drink) => {
-      return total + parseFloat(drink.strPrice) * drink.quantity!;
-    }, 0)
-    .toFixed(2);
-
-    const handleCancel = () => {
-      if (useCart.items.length === 0) {
-        window.history.back();
-      } else {
-        setOpen(true);
-      }
-    };
-
-    const handleCancelConfirmed = () => {
-      useCart.clearCart();
+  const handleCancel = () => {
+    if (useCart.items.length === 0) {
       window.history.back();
-    };  
+    } else {
+      setOpen(true);
+    }
+  };
+
+  const handleCancelConfirmed = () => {
+    useCart.clearCart();
+    window.history.back();
+  };
 
   return (
     <div>
@@ -130,7 +126,7 @@ function Carts() {
             <Separator />
             <div className="flex items-center text-lg">
               <div>Subtotal</div>
-              <div className="ml-auto">${subtotal}</div>
+              <div className="ml-auto">${useCart.subTotal().toFixed(2)}</div>
             </div>
           </CardContent>
 
@@ -161,7 +157,11 @@ function Carts() {
               <PopoverTrigger>
                 <Button
                   className="w-full"
-                  onClick={() => useCart.allOrders()}
+                  onClick={() => {
+                    useOrder.addOrder(useCart.items, useCart.subTotal(), useOrder.orderId);
+                    
+                    useCart.clearCart();
+                  }}
                 >
                   <CreditCardIcon className="mr-2 h-4 w-4" />
                   Pay with card
@@ -173,7 +173,7 @@ function Carts() {
             </Popover>
           </CardFooter>
         </Card>
-
+        
         {/* Anything else */}
         <Card className="sticky top-8">
           <CardContent>
