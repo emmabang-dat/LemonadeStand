@@ -52,7 +52,7 @@ function Panel() {
               <CardFooter>
                 <div className="flex items-center">
                   <div>Total</div>
-                  <div className="ml-auto">$ {order.cartSubTotal}</div>
+                  <div className="ml-auto">$ {order.cartSubTotal.toFixed(2)}</div>
                 </div>
               </CardFooter>
             </Card>
@@ -63,7 +63,7 @@ function Panel() {
       <Card className="sticky top-8">
         <CardContent>
           <div className="font-bold text-center pt-8 pb-6">Total Revenue</div>
-          <div className="text-xl text-center">$ {useOrder.totalRevenue}</div>
+          <div className="text-xl text-center">$ {useOrder.totalRevenue.toFixed(2)}</div>
         </CardContent>
       </Card>
     </div>
