@@ -158,7 +158,7 @@ function Carts() {
                 <Button
                   className="w-full"
                   onClick={() => {
-                    useOrder.addOrder(useCart.items, useCart.subTotal(), useOrder.orderId);
+                    useOrder.addOrder(useCart.items, useCart.subTotal());
                     
                     useCart.clearCart();
                   }}
@@ -173,7 +173,7 @@ function Carts() {
             </Popover>
           </CardFooter>
         </Card>
-        
+
         {/* Anything else */}
         <Card className="sticky top-8">
           <CardContent>

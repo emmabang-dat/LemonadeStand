@@ -5,8 +5,7 @@ interface Order {
   id: number;
   items: any[];
   totalRevenue: number;
-  orderId: number;
-  addOrder: (cart: any, cartSubTotal: number, orderId: number) => void;
+  addOrder: (cart: any, cartSubTotal: number) => void;
 }
 
 export const useOrderStore = create(
@@ -15,20 +14,17 @@ export const useOrderStore = create(
       id: 0,
       items: [],
       totalRevenue: 0,
-      orderId: 0,
-      addOrder: (cart: any, cartSubTotal: number, orderId: number) => {
+      addOrder: (cart: any, cartSubTotal: number) => {
         const currentItems = get().items;
         const newItem = {
           id: get().id + 1,
           cart,
           cartSubTotal,
-          orderId,
         };
         set({
           id: get().id + 1,
           items: [...currentItems, newItem],
           totalRevenue: get().totalRevenue + cartSubTotal,
-          orderId: get().orderId + 1,
         });
       },
     }),
