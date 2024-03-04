@@ -22,17 +22,15 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import JSConfetti from "js-confetti";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-export default function Cart() {
+function Carts() {
   const [randomDrinks, setRandomDrinks] = useState<Drink[]>([]);
-  const cart = useCartStore();
-  const jsConfetti = new JSConfetti();
+  const useCart = useCartStore();
 
   const [open, setOpen] = React.useState(false);
 
@@ -55,28 +53,27 @@ export default function Cart() {
     generateRandomDrinks();
   }, []);
 
-  const subtotal = cart.items
+  const subtotal = useCart.items
     .reduce((total, drink) => {
       return total + parseFloat(drink.strPrice) * drink.quantity!;
     }, 0)
     .toFixed(2);
 
-  const handleCancel = () => {
-    if (cart.items.length > 0) {
-      setOpen(true);
-    } else {
-      window.history.back();
-    }
-  };
+    const handleCancel = () => {
+      if (useCart.items.length === 0) {
+        window.history.back();
+      } else {
+        setOpen(true);
+      }
+    };
 
-  const handleCancelConfirmed = () => {
-    cart.clearCart();
-    window.history.back();
-  };
+    const handleCancelConfirmed = () => {
+      useCart.clearCart();
+      window.history.back();
+    };  
 
   function handleCheckout() {
-    jsConfetti.addConfetti();
-    cart.clearCart();
+    useCart.clearCart();
   }
 
   return (
@@ -90,10 +87,10 @@ export default function Cart() {
           <CardContent className="flex flex-col gap-4">
             <div className="font-semibold text-2xl py-6">Your cart</div>
             <div className="grid gap-4">
-              {cart.items.length === 0 ? (
+              {useCart.items.length === 0 ? (
                 <div className="italic text-gray-400">Cart is empty</div>
               ) : (
-                cart.items.map((cocktail) => (
+                useCart.items.map((cocktail) => (
                   <div
                     key={cocktail.idDrink}
                     className="flex items-center gap-6"
@@ -112,7 +109,7 @@ export default function Cart() {
                       </div>
                     </div>
                     <Button
-                      onClick={() => cart.addToCart(cocktail)}
+                      onClick={() => useCart.addToCart(cocktail)}
                       className="h-8 w-8"
                       size="icon"
                       variant="outline"
@@ -121,7 +118,7 @@ export default function Cart() {
                       <span className="sr-only">Add one</span>
                     </Button>
                     <Button
-                      onClick={() => cart.removeFromCart(cocktail.idDrink)}
+                      onClick={() => useCart.removeFromCart(cocktail.idDrink)}
                       className="h-8 w-8"
                       size="icon"
                       variant="outline"
@@ -169,7 +166,6 @@ export default function Cart() {
                 <Button
                   className="w-full"
                   onClick={handleCheckout}
-                  disabled={cart.items.length === 0}
                 >
                   <CreditCardIcon className="mr-2 h-4 w-4" />
                   Pay with card
@@ -202,7 +198,7 @@ export default function Cart() {
                   <div className="flex-1 grid gap-1 text-sm">
                     <div className="font-semibold">{drink.strDrink}</div>
                     <div>$ {drink.strPrice}</div>
-                    <Button onClick={() => cart.addToCart(drink)} size="sm">
+                    <Button onClick={() => useCart.addToCart(drink)} size="sm">
                       Add to Cart
                     </Button>
                   </div>
@@ -215,3 +211,4 @@ export default function Cart() {
     </div>
   );
 }
+export default Carts;

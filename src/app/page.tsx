@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import {
   CardTitle,
   CardDescription,
@@ -22,7 +22,7 @@ export default function Home() {
   const [cocktails, setCocktails] = useState<Drink[]>([]);
   const [searchText, setSearchText] = useState("");
 
-  const cart = useCartStore();
+  const useCart = useCartStore();
 
   useEffect(() => {
     const tempCocktails = [...cocktailsData.cocktailsData];
@@ -79,7 +79,7 @@ export default function Home() {
                 </CardContent>
                 <CardFooter className="flex items-center gap-2">
                   <div className="font-semibold mr-4">${cocktail.strPrice}</div>
-                  <Button onClick={() => cart.addToCart(cocktail)} size="sm">
+                  <Button onClick={() => useCart.addToCart(cocktail)} size="sm">
                     Add to cart
                   </Button>
                 </CardFooter>
@@ -107,10 +107,10 @@ export default function Home() {
         <Card className="mt-4 sticky top-8">
           <CardContent>
             <div className="font-semibold pt-6 pb-3">Your cart</div>
-            {cart.items.length === 0 ? (
+            {useCart.items.length === 0 ? (
               <div className="italic text-gray-400">Cart is empty</div>
             ) : (
-              cart.items.map((cocktail) => (
+              useCart.items.map((cocktail) => (
                 <div
                   key={cocktail.idDrink}
                   className="flex items-center gap-4 mt-2"
@@ -129,7 +129,7 @@ export default function Home() {
                     </div>
                   </div>
                   <Button
-                    onClick={() => cart.removeFromCart(cocktail.idDrink)}
+                    onClick={() => useCart.removeFromCart(cocktail.idDrink)}
                     className="h-6 w-6"
                     size="icon"
                     variant="outline"
@@ -146,19 +146,21 @@ export default function Home() {
             <div>Subtotal</div>
             <div className="ml-auto">
               $
-              {cart.items
+              {useCart.items
                 .reduce((total, drink) => {
                   return total + parseFloat(drink.strPrice) * drink.quantity!;
                 }, 0)
                 .toFixed(2)}
             </div>
 
-            <Button className="w-full" disabled={cart.items.length === 0}>
-              <Link href="/cart" className="flex items-center">
+
+              <Link href="/carts" className="flex items-center">
+              <Button className="w-full" >
                 <ShoppingBagIcon className="mr-2 h-4 w-4" />
                 Go to cart
+                </Button>
               </Link>
-            </Button>
+            
           </CardFooter>
         </Card>
       </div>
